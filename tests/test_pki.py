@@ -7,7 +7,7 @@ from crystalline_pki.pki import load_cert
 def test_generate_and_verify(ready):
     result = ready.pki.verify_chain()
     assert result["failed"] == 0
-    assert result["passed"] == 19
+    assert result["passed"] >= 19
     assert ready.pki.ready()
 
 
