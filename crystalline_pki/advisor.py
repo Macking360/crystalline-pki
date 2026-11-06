@@ -130,7 +130,8 @@ def _certificate_checks(result, findings, passed):
                                  "No intermediate certificate was presented.", "Clients that do not already know the intermediate will fail to verify the site.",
                                  "Serve the full chain (leaf plus intermediates)."))
     else:
-        passed.append(_passed("Chain", "Complete chain presented", "%d certificates were served and verified to a trusted root." % len(result["chain"])))
+        passed.append(_passed("Chain", "Complete chain presented", "The server sent %s; the verified path to a trusted root has %d." % (
+            ("%d certificate(s)" % result["served_count"]) if result.get("served_count") else "a chain", len(result["chain"]))))
 
 
 def _header_checks(result, findings, passed):
@@ -228,7 +229,8 @@ def narrative(result: dict) -> list:
         "The server proved its identity with a certificate issued by %s, valid until %s (%d days from now)." % (issuer, leaf["not_after"][:10], leaf["days_remaining"]),
         "The certificate uses a %s %s key and covers: %s." % (leaf["public_key_type"], leaf["public_key_detail"],
                                                               ", ".join(leaf["subject_alternative_names"][:6]) or "no listed names"),
-        "The full chain contains %d certificate(s) (%s), which this tool verified against %s." % (
+        "%s The verified path to a trusted root has %d certificate(s) (%s), checked against %s." % (
+            ("The server sent %d certificate(s)." % result["served_count"]) if result.get("served_count") else "The server's chain was read.",
             len(result["chain"]), result["chain_source"],
             "the operating system's trust store" if result["trust_store"] == "system default" else "the bundle " + result["trust_store"]),
         "A single HEAD request was then sent through the encrypted channel; the server replied \"%s\" with %d headers." % (

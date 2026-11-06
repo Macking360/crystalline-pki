@@ -121,6 +121,17 @@ def _presented_chain(tls):
     return [x509.load_der_x509_certificate(tls.getpeercert(binary_form=True))], "leaf-only"
 
 
+def _served_count(tls):
+    sslobj = getattr(tls, "_sslobj", None)
+    getter = getattr(sslobj, "get_unverified_chain", None)
+    if getter is None:
+        return None
+    try:
+        return len(getter() or [])
+    except Exception:
+        return None
+
+
 def _cipher_assessment(version, cipher_name):
     return {
         "forward_secrecy": version == "TLSv1.3" or "ECDHE" in cipher_name or "DHE" in cipher_name,
@@ -223,6 +234,7 @@ class ExternalProbe:
                 version = tls.version()
                 cipher = tls.cipher()
                 chain, chain_source = _presented_chain(tls)
+                served_count = _served_count(tls)
                 local, remote = tls.getsockname(), tls.getpeername()
                 path = quote(parsed.path or "/", safe="/%:@!$&'()*+,;=-._~")
                 request_text = ("HEAD %s HTTP/1.1\r\nHost: %s\r\nUser-Agent: %s\r\nAccept: */*\r\nConnection: close\r\n\r\n"
@@ -295,6 +307,7 @@ class ExternalProbe:
                 "tls": tls_session,
                 "trust_store": bundle or "system default",
                 "chain_source": chain_source,
+                "served_count": served_count,
                 "chain": described_chain,
                 "certificate": leaf,
                 "certificate_sha256": leaf["sha256_fingerprint"],

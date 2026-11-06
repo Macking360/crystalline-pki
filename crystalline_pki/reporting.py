@@ -117,7 +117,7 @@ def render_probe(result: dict) -> str:
             out.append("  %-9s %s  %s" % (version, "SUPPORTED" if entry["supported"] else "not supported", detail))
         alpn = support["alpn_preference"]
         out.append("  ALPN preference when offered h2 and http/1.1: " + str(alpn.get("negotiated", alpn.get("error"))))
-    out.append(_rule("CERTIFICATE CHAIN (%s, %d certificates)" % (result["chain_source"], len(result["chain"]))))
+    out.append(_rule("CERTIFICATE CHAIN (%s path, %d certificates; server sent %s)" % (result["chain_source"], len(result["chain"]), result.get("served_count") or "unknown")))
     for index, cert in enumerate(result["chain"]):
         out += _certificate_block(cert, index)
         out.append("")

@@ -217,8 +217,8 @@ class Autopilot:
                 result = app.probe.examine(url, authorized=True, cafile=bundle["path"], deep=deep)
             else:
                 raise
-        self._emit(steps, progress, "Handshake", "%s with %s; %d certificate(s) in the chain." % (
-            result["tls_version"], result["cipher"][0], len(result["chain"])))
+        self._emit(steps, progress, "Handshake", "%s with %s; server sent %s certificate(s), verified path has %d." % (
+            result["tls_version"], result["cipher"][0], result.get("served_count") or "?", len(result["chain"])))
         if fallback:
             result["trust_fallback"] = fallback
         result["assessment"] = assess(result)
