@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "crystalline-pki"
+dynamic = ["version"]
+description = "A local PKI, X.509 and mutual TLS research lab with a plain-English TLS examiner"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = ["cryptography>=42,<47"]
+keywords = ["pki", "x509", "tls", "mtls", "certificates", "security"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+crystalline-pki = "crystalline_pki.cli:main"
+
+[tool.setuptools]
+packages = ["crystalline_pki"]
+
+[tool.setuptools.dynamic]
+version = { attr = "crystalline_pki.__version__" }
+
+[tool.setuptools.package-data]
+crystalline_pki = ["web/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

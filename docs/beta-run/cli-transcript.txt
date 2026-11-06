@@ -1,0 +1,352 @@
+$ crystalline-pki auto https://hackthissite.org
+By giving this address you confirm you own the site or may test it. Exactly one HEAD request is sent; nothing is scanned, guessed or attacked.
+
+[ ok ] Workspace          Workspace at C:\Users\<you>\AppData\Local\Temp\cpki-transcript2 (keys and logs are stored here).
+[ .. ] Authority          No lab authority yet; creating root, intermediate, server and client certificates.
+[ ok ] Authority          Created the lab authority.
+[ ok ] Verification       19 of 19 hierarchy checks passed.
+[ ok ] Renewal            No certificate expires within 21 days.
+[ ok ] Revocation list    Revocation list #1 has 168 hours left.
+[ ok ] Trust bundle       Found a fallback bundle (certifi package, 143 roots) at C:\Users\<you>\AppData\Local\Programs\Python\Python312\Lib\site-packages\certifi\cacert.pem. It is used automatically only when the operating system's store cannot verify a site.
+[ ok ] Mutual TLS server  Started on 127.0.0.1:9443; it accepts only certificates from the lab authority that are not revoked.
+[ .. ] Self-test          Running the six mutual TLS scenarios once so the dashboard has proof.
+[ ok ] Self-test          6 of 6 scenarios behaved as expected.
+[ ok ] Audit trail        32 events, chain intact. New head recorded in logs/audit-anchor.json.
+
+[ ok ] Address check      hackthissite.org is a public HTTPS address (no credentials, no private network, standard port).
+[ .. ] Connection         Resolving hackthissite.org, connecting and verifying its certificate with the operating system's trust store.
+[ ok ] Handshake          TLSv1.2 with ECDHE-RSA-AES256-GCM-SHA384; 4 certificate(s) in the chain.
+[ ok ] Assessment         Grade B (88/100): No serious problems; 2 improvement(s) recommended.
+[ ok ] Change tracking    First time seen: this result is now the baseline for future comparisons.
+[ ok ] Reports saved      Text and JSON copies are in C:\Users\<you>\AppData\Local\Temp\cpki-transcript2\reports.
+
+TLS AND REQUEST REPORT FOR hackthissite.org
+Captured 2026-11-06T01:43:55.395098+00:00
+
+WHAT HAPPENED, IN PLAIN ENGLISH
+-------------------------------
+  1. hackthissite.org resolved to 5 address(es); this tool connected to 137.74.187.102:443 over IPv4.
+  2. The connection took 1297 ms in total: 15 ms to look up the name, 203 ms to open the TCP connection, 438 ms for the TLS handshake and 641 ms waiting for the first byte.
+  3. Both sides agreed on TLSv1.2 with the cipher suite ECDHE-RSA-AES256-GCM-SHA384 (256-bit).
+  4. The server proved its identity with a certificate issued by HARICA DV TLS RSA, valid until 2027-04-27 (172 days from now).
+  5. The certificate uses a RSA 4096 key and covers: DNS:hackthissite.org, DNS:www.hackthissite.org, DNS:hackthisjogneh42n5o7gbzrewxee3vyu6ex37ukyvdw6jm66npakiyd.onion.
+  6. The full chain contains 4 certificate(s) (verified), which this tool verified against the operating system's trust store.
+  7. A single HEAD request was then sent through the encrypted channel; the server replied "HTTP/1.1 200 OK" with 20 headers.
+
+ASSESSMENT: GRADE B (88/100)
+----------------------------
+  No serious problems; 2 improvement(s) recommended.
+  Heuristic scoring of observable settings: 100 minus 40 per critical, 15 per error, 6 per warning. It is a guide, not a certification.
+
+  Findings (most serious first)
+  [WARNING] Protocol: TLS 1.3 not supported
+      What we saw: A handshake restricted to TLS 1.3 failed.
+      Why it matters: Missing TLS 1.3 means slower connections and no 1.3-only protections.
+      What to do: Upgrade the TLS library or enable TLS 1.3.
+  [WARNING] Cookies: 3 cookie flag problem(s)
+      What we saw: Cookie HackThisSite is missing the Secure flag; Cookie HackThisSite is missing HttpOnly; Cookie HackThisSite has no SameSite setting
+      Why it matters: Missing Secure, HttpOnly or SameSite makes cookies easier to steal or misuse.
+      What to do: Set Secure; HttpOnly; SameSite=Lax (or Strict) on session cookies.
+  [INFO] Chain: Non-positive serial number in the chain
+      What we saw: 1 certificate(s) have a zero or negative serial: CN=Hellenic Academic and Research Institutions RootCA 2015,O=Hellenic Academic and Research Institutions Cert. Authority,L=Athens,C=GR.
+      Why it matters: RFC 5280 requires positive serial numbers. Today's browsers accept the chain, but newer software may reject it.
+      What to do: Ask the issuing CA to reissue; nothing for the site owner to change if the fault is in an intermediate.
+  [INFO] Headers: No X-Content-Type-Options
+      What we saw: Not sent.
+      Why it matters: Browsers may guess content types and run uploads as scripts.
+      What to do: Send X-Content-Type-Options: nosniff
+  [INFO] Headers: Framing not restricted
+      What we saw: Neither X-Frame-Options nor CSP frame-ancestors is set.
+      Why it matters: Other sites could embed this one to trick users into clicking (clickjacking).
+      What to do: Send X-Frame-Options: DENY or CSP frame-ancestors.
+
+  Checks that passed
+  [PASS] Cipher: Forward secrecy - Each session uses throwaway keys, so a future theft of the server key cannot decrypt recorded traffic.
+  [PASS] Cipher: Authenticated encryption - The cipher (ECDHE-RSA-AES256-GCM-SHA384) both encrypts and detects tampering.
+  [PASS] Protocol: No TLS compression - Compression is off, which avoids the CRIME attack.
+  [PASS] Protocol: HTTP/2 available - The server picked h2 when offered; pages load over multiplexed connections.
+  [PASS] Certificate: Plenty of validity left - 172 days remain until 2027-04-27.
+  [PASS] Certificate: Key strength - RSA 4096 is considered strong.
+  [PASS] Revocation: Revocation endpoints listed - Clients can check for revocation (OCSP: 0, CRL: 1).
+  [PASS] Transparency: Certificate Transparency - 3 log proofs are embedded.
+  [PASS] Chain: Complete chain presented - 4 certificates were served and verified to a trusted root.
+  [PASS] Headers: HSTS - max-age 31536000 seconds (365 days)
+  [PASS] Headers: Content-Security-Policy - A policy is present.
+
+CHANGE TRACKING
+---------------
+  Status: INFO (first observation; saved as baseline)
+  [INFO] First check; this result is now the baseline
+
+CONNECTION
+----------
+  Target URL:          https://hackthissite.org/
+  Resolved addresses:  137.74.187.102, 137.74.187.100, 137.74.187.101, 137.74.187.103, 137.74.187.104
+  Connected to:        137.74.187.102:443 (IPv4)
+  Local endpoint:      192.168.1.80:62394
+  Trust store used:    system default
+
+TIMING (milliseconds)
+---------------------
+  Dns                  15.0
+  Tcp Connect          203.0
+  Tls Handshake        438.0
+  Time To First Byte   641.0
+  Total                1297.0
+
+TLS SESSION
+-----------
+  Protocol version:    TLSv1.2
+  Cipher suite:        ECDHE-RSA-AES256-GCM-SHA384 (TLSv1.2, 256-bit secret)
+  Forward secrecy:     yes
+  Authenticated enc.:  yes
+  ALPN negotiated:     http/1.1
+  Compression:         None
+  Session reused:      False
+  Server name (SNI):   hackthissite.org
+  Hostname checked:    True
+  Certificate checks:  CERT_REQUIRED
+  Client TLS range:    TLSv1_2 to MAXIMUM_SUPPORTED
+  OpenSSL:             OpenSSL 3.0.13 30 Jan 2024
+  Ciphers we offered (17):
+    TLS_AES_256_GCM_SHA384
+    TLS_CHACHA20_POLY1305_SHA256
+    TLS_AES_128_GCM_SHA256
+    ECDHE-ECDSA-AES256-GCM-SHA384
+    ECDHE-RSA-AES256-GCM-SHA384
+    ECDHE-ECDSA-AES128-GCM-SHA256
+    ECDHE-RSA-AES128-GCM-SHA256
+    ECDHE-ECDSA-CHACHA20-POLY1305
+    ECDHE-RSA-CHACHA20-POLY1305
+    ECDHE-ECDSA-AES256-SHA384
+    ECDHE-RSA-AES256-SHA384
+    ECDHE-ECDSA-AES128-SHA256
+    ECDHE-RSA-AES128-SHA256
+    DHE-RSA-AES256-GCM-SHA384
+    DHE-RSA-AES128-GCM-SHA256
+    DHE-RSA-AES256-SHA256
+    DHE-RSA-AES128-SHA256
+
+PROTOCOL SUPPORT (extra handshakes, no HTTP sent)
+-------------------------------------------------
+  TLSv1.3   not supported  SSLV3_ALERT_HANDSHAKE_FAILURE
+  TLSv1.2   SUPPORTED  ECDHE-RSA-AES256-GCM-SHA384
+  ALPN preference when offered h2 and http/1.1: h2
+
+CERTIFICATE CHAIN (verified, 4 certificates)
+--------------------------------------------
+[0] LEAF
+  Subject:             CN=hackthisjogneh42n5o7gbzrewxee3vyu6ex37ukyvdw6jm66npakiyd.onion
+  Issuer:              CN=HARICA DV TLS RSA,O=Hellenic Academic and Research Institutions CA,C=GR
+  Serial (hex):        a73d56132a7e4abc9a8e8aa93eeb7b6
+  Version:             v3
+  Valid from:          2026-10-10T18:51:41+00:00
+  Valid until:         2027-04-27T18:51:40+00:00  (172 days left, 198 day lifetime)
+  Signature:           sha256WithRSAEncryption (OID 1.2.840.113549.1.1.11)
+  Public key:          RSA 4096  exponent 65537
+  CA / path length:    None / None
+  Key usage:           digital_signature, key_encipherment
+  Extended key usage:  clientAuth (proves a client's identity to servers), serverAuth (proves a server's identity to clients)
+  Names (SAN):         DNS:hackthissite.org, DNS:www.hackthissite.org, DNS:hackthisjogneh42n5o7gbzrewxee3vyu6ex37ukyvdw6jm66npakiyd.onion
+  Policies:            2.23.140.1.2.1, 0.4.0.2042.1.6, 1.3.6.1.4.1.26513.1.1.1.1
+  OCSP responders:     -
+  CA issuer URLs:      http://crt.harica.gr/HARICA-DV-TLS-Sub-R1.cer
+  CRL distribution:    http://crl.harica.gr/HARICA-DV-TLS-Sub-R1.crl
+  Transparency (SCTs): 3
+  Subject key id:      7d57ebf6fbf99dac07d31e2bd4e7e3798c49129f
+  Authority key id:    0a88abbc8bf0f54aec6144504044c18766dede51
+  SHA-256 fingerprint: 1cb7d35eb0b6c246dc7dbc5032e071c9f567008f42663c106ac7869b6928ecef
+  Public key SHA-256:  c3e638d5704f95972cd0e3b59552d5f9b130f94c40fa71f9ff3ac5c34f775d3f
+  Extensions (OIDs):   2.5.29.35, 1.3.6.1.5.5.7.1.1, 2.5.29.17, 2.5.29.32, 2.5.29.37, 2.5.29.31, 2.5.29.14, 2.5.29.15, 1.3.6.1.4.1.11129.2.4.2
+  Critical extensions: 2.5.29.15
+    SCT log 604c9aaf7a7f775f... at 2026-10-10T19:01:43.210000
+    SCT log 46a23967c60db646... at 2026-10-10T19:01:43.239000
+    SCT log 44c2bd0ce9140e64... at 2026-10-10T19:01:43.191000
+  [INFO] This is a leaf (end-entity) certificate: it identifies one server, person or device and cannot sign others.
+  [OK] This certificate is valid for 172 more days.
+  [INFO] Allowed use: clientAuth (proves a client's identity to servers)
+  [INFO] Allowed use: serverAuth (proves a server's identity to clients)
+  [OK] RSA 4096-bit key: acceptable.
+  [OK] Lifetime of 198 days is short, which limits damage if a key leaks.
+
+[1] INTERMEDIATE
+  Subject:             CN=HARICA DV TLS RSA,O=Hellenic Academic and Research Institutions CA,C=GR
+  Issuer:              CN=HARICA TLS RSA Root CA 2021,O=Hellenic Academic and Research Institutions CA,C=GR
+  Serial (hex):        155b81b85db6c69a4b1e76f348b0705c
+  Version:             v3
+  Valid from:          2021-03-19T09:24:04+00:00
+  Valid until:         2036-03-15T09:24:03+00:00  (3417 days left, 5474 day lifetime)
+  Signature:           sha256WithRSAEncryption (OID 1.2.840.113549.1.1.11)
+  Public key:          RSA 4096  exponent 65537
+  CA / path length:    True / 0
+  Key usage:           digital_signature, key_cert_sign, crl_sign
+  Extended key usage:  clientAuth (proves a client's identity to servers), serverAuth (proves a server's identity to clients)
+  Names (SAN):         -
+  Policies:            2.5.29.32.0
+  OCSP responders:     -
+  CA issuer URLs:      http://repo.harica.gr/certs/HARICA-TLS-Root-2021-RSA.cer
+  CRL distribution:    http://crl.harica.gr/HARICA-TLS-Root-2021-RSA.crl
+  Transparency (SCTs): 0
+  Subject key id:      0a88abbc8bf0f54aec6144504044c18766dede51
+  Authority key id:    0a4823a660a4920a33ea935bc557ea254dbd12ee
+  SHA-256 fingerprint: 28101ee3cd2ff6f225fbf0ede94ab50d6762afdbab964f7c9d3ccf7f02ee9838
+  Public key SHA-256:  ae4d88d9eb6f49a85991adc53cacaf001352d0d25a0c276e283790e55be0fd7b
+  Extensions (OIDs):   2.5.29.19, 2.5.29.35, 1.3.6.1.5.5.7.1.1, 2.5.29.32, 2.5.29.37, 2.5.29.31, 2.5.29.14, 2.5.29.15
+  Critical extensions: 2.5.29.19, 2.5.29.15
+  [INFO] This is a CA certificate: it can sign other certificates. It may sign 0 more level(s) of CAs below it.
+  [OK] This certificate is valid for 3417 more days.
+  [INFO] Allowed use: clientAuth (proves a client's identity to servers)
+  [INFO] Allowed use: serverAuth (proves a server's identity to clients)
+  [OK] RSA 4096-bit key: acceptable.
+
+[2] INTERMEDIATE
+  Subject:             CN=HARICA TLS RSA Root CA 2021,O=Hellenic Academic and Research Institutions CA,C=GR
+  Issuer:              CN=Hellenic Academic and Research Institutions RootCA 2015,O=Hellenic Academic and Research Institutions Cert. Authority,L=Athens,C=GR
+  Serial (hex):        2a6086d4d4de45c95e4b98fbbf2fbf26
+  Version:             v3
+  Valid from:          2021-09-02T07:41:55+00:00
+  Valid until:         2029-08-31T07:41:54+00:00  (1029 days left, 2919 day lifetime)
+  Signature:           sha256WithRSAEncryption (OID 1.2.840.113549.1.1.11)
+  Public key:          RSA 4096  exponent 65537
+  CA / path length:    True / None
+  Key usage:           digital_signature, key_cert_sign, crl_sign
+  Extended key usage:  clientAuth (proves a client's identity to servers), serverAuth (proves a server's identity to clients)
+  Names (SAN):         -
+  Policies:            2.5.29.32.0
+  OCSP responders:     -
+  CA issuer URLs:      http://repo.harica.gr/certs/HaricaRootCA2015.crt
+  CRL distribution:    http://crl.harica.gr/HaricaRootCA2015.crl
+  Transparency (SCTs): 0
+  Subject key id:      0a4823a660a4920a33ea935bc557ea254dbd12ee
+  Authority key id:    711567c8c8c9bd755d72d038186a9df37124540b
+  SHA-256 fingerprint: 4acd8dc6020a545a858943a553b5e0f3fc5b859aea1746650d69cf1210f956d8
+  Public key SHA-256:  693c9aa6b245b3b0261637750863eadb6c248a16e52d6f4bc90c86bbf32d7042
+  Extensions (OIDs):   2.5.29.19, 2.5.29.35, 1.3.6.1.5.5.7.1.1, 2.5.29.32, 2.5.29.37, 2.5.29.31, 2.5.29.14, 2.5.29.15
+  Critical extensions: 2.5.29.19, 2.5.29.15
+  [INFO] This is a CA certificate: it can sign other certificates.
+  [OK] This certificate is valid for 1029 more days.
+  [INFO] Allowed use: clientAuth (proves a client's identity to servers)
+  [INFO] Allowed use: serverAuth (proves a server's identity to clients)
+  [OK] RSA 4096-bit key: acceptable.
+
+[3] ROOT
+  Subject:             CN=Hellenic Academic and Research Institutions RootCA 2015,O=Hellenic Academic and Research Institutions Cert. Authority,L=Athens,C=GR
+  Issuer:              CN=Hellenic Academic and Research Institutions RootCA 2015,O=Hellenic Academic and Research Institutions Cert. Authority,L=Athens,C=GR
+  Serial (hex):        0
+  Version:             v3
+  Valid from:          2015-07-07T10:11:21+00:00
+  Valid until:         2040-06-30T10:11:21+00:00  (4985 days left, 9125 day lifetime)
+  Signature:           sha256WithRSAEncryption (OID 1.2.840.113549.1.1.11)
+  Public key:          RSA 4096  exponent 65537
+  CA / path length:    True / None
+  Key usage:           key_cert_sign, crl_sign
+  Extended key usage:  -
+  Names (SAN):         -
+  Policies:            -
+  OCSP responders:     -
+  CA issuer URLs:      -
+  CRL distribution:    -
+  Transparency (SCTs): 0
+  Subject key id:      711567c8c8c9bd755d72d038186a9df37124540b
+  Authority key id:    None
+  SHA-256 fingerprint: a040929a02ce53b4acf4f2ffc6981ce4496f755e6d45fe0b2a692bcd52523f36
+  Public key SHA-256:  50cc86ba96db3263c79a43ead07553d9f56659e6907e72d8c026637a1cdc85dc
+  Extensions (OIDs):   2.5.29.19, 2.5.29.15, 2.5.29.14
+  Critical extensions: 2.5.29.19, 2.5.29.15
+  [INFO] This is a root certificate: it vouches for itself. You trust it only because you installed it.
+  [OK] This certificate is valid for 4985 more days.
+  [OK] RSA 4096-bit key: acceptable.
+
+
+REQUEST SENT
+------------
+  HEAD / HTTP/1.1
+  Host: hackthissite.org
+  User-Agent: crystalline-pki/5.2.0b1
+  Accept: */*
+  Connection: close
+  (HEAD asks for headers only; no body is requested or received)
+
+RESPONSE
+--------
+  HTTP/1.1 200 OK
+  Date: Fri, 06 Nov 2026 01:43:52 GMT
+  Upgrade: h2,h2c
+  Connection: Upgrade, close
+  Set-Cookie: HackThisSite=fg47b7fqlf34eu4gj6smplem00; expires=Sat, 07-Nov-2026 01:43:52 GMT; path=/
+  Expires: Thu, 19 Nov 1981 08:52:00 GMT
+  Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+  Pragma: no-cache
+  Onion-Location: http://hackthisjogneh42n5o7gbzrewxee3vyu6ex37ukyvdw6jm66npakiyd.onion/
+  Content-Type: text/html
+  Content-Language: en
+  Server: HackThisSite
+  Access-Control-Allow-Origin: *
+  Content-Security-Policy: child-src 'self' hackthissite.org *.hackthissite.org htscdn.org *.htscdn.org discord.com; form-action 'self' hackthissite.org *.hackthissite.org htscdn.org *.htscdn.org; upgrade-insecure-requests; report-uri https://hackthissite.report-uri.com/r/d/csp/enforce
+  Referrer-Policy: origin-when-cross-origin
+  X-XSS-Protection: 0
+  Feature-Policy: fullscreen *
+  Public-Key-Pins-Report-Only: pin-sha256="YLh1dUR9y6Kja30RrAn7JKnbQG/uEtLMkBgFF2Fuihg="; pin-sha256="Vjs8r4z+80wjNcr1YKepWQboSIRi63WsWXhIMN+eWys="; max-age=2592000; includeSubDomains; report-uri="https://hackthissite.report-uri.com/r/d/hpkp/reportOnly"
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  Report-To: {"group":"default","max_age":31536000,"endpoints":[{"url":"https://hackthissite.report-uri.com/a/d/g"}],"include_subdomains":true}
+  NEL: {"report_to":"default","max_age":31536000,"include_subdomains":true,"success_fraction":0.0,"failure_fraction":0.1}
+
+SECURITY HEADER ANALYSIS
+------------------------
+  [OK     ] strict-transport-security      max-age 31536000 seconds (365 days)
+  [OK     ] content-security-policy        Present
+  [INFO   ] x-frame-options                Not sent
+  [INFO   ] x-content-type-options         Not sent
+  [OK     ] referrer-policy                Present: origin-when-cross-origin
+  [INFO   ] permissions-policy             Not sent
+  [INFO   ] cross-origin-opener-policy     Not sent
+  [INFO   ] cross-origin-embedder-policy   Not sent
+  [INFO   ] cross-origin-resource-policy   Not sent
+  HSTS: includeSubDomains=True preload=True
+
+COOKIES (values redacted)
+-------------------------
+  HackThisSite  secure=False httponly=False samesite=None path=/ value_length=26
+  [WARNING] Cookie HackThisSite is missing the Secure flag
+  [WARNING] Cookie HackThisSite is missing HttpOnly
+  [WARNING] Cookie HackThisSite has no SameSite setting
+
+SERVER FINGERPRINT AND INFRASTRUCTURE
+-------------------------------------
+  server: HackThisSite
+  Infrastructure hints: none
+  Advertises HTTP/3:    False
+  Content type:         text/html
+  Cache control:        no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+
+One authorized HEAD request; the query string and fragment were not transmitted. Cookie values are redacted.
+
+Saved: C:\Users\<you>\AppData\Local\Temp\cpki-transcript2\reports\probe-hackthissiteorg-20261106-014355.txt
+Saved: C:\Users\<you>\AppData\Local\Temp\cpki-transcript2\reports\probe-hackthissiteorg-20261106-014355.json
+
+$ crystalline-pki trust
+Trust bundles found on this computer (used automatically only as a fallback):
+
+  certifi package             143 roots  C:\Users\<you>\AppData\Local\Programs\Python\Python312\Lib\site-packages\certifi\cacert.pem
+  Git for Windows             150 roots  C:\Program Files\Git\mingw64\etc\ssl\certs\ca-bundle.crt
+
+Python on Windows only sees roots Windows has already installed; a bundle file lets the tool verify sites whose root has not been installed yet.
+
+To make your browser trust this lab's own web interface, import the root certificate:
+  C:\Users\<you>\AppData\Local\Temp\cpki-transcript2\pki\root\root-cert.pem
+
+  Windows (current user)     certutil -user -addstore Root "C:\Users\<you>\AppData\Local\Temp\cpki-transcript2\pki\root\root-cert.pem"
+  macOS (login keychain)     security add-trusted-cert -r trustRoot -k ~/Library/Keychains/login.keychain-db "C:\Users\<you>\AppData\Local\Temp\cpki-transcript2\pki\root\root-cert.pem"
+  Debian/Ubuntu (system)     sudo cp "C:\Users\<you>\AppData\Local\Temp\cpki-transcript2\pki\root\root-cert.pem" /usr/local/share/ca-certificates/crystalline-pki-root.crt && sudo update-ca-certificates
+  Firefox                    Settings > Privacy & Security > Certificates > View Certificates > Authorities > Import
+  Android                    Settings > Security > Encryption & credentials > Install a certificate > CA certificate
+
+Only trust a root you created yourself. This tool never changes your trust stores on its own.
+
+$ crystalline-pki audit verify
+{
+  "records_checked": 42,
+  "valid": true,
+  "head": "1110d63c1b76f09ce622aff1883bb432b25e525ae8a99060c840f41c3a101f84",
+  "failures": []
+}
