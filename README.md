@@ -119,19 +119,98 @@ could not be verified.
 - A phone is not a safe place for a CA. The intended mobile design is an outbound
   client with a hardware-bound key (Android Keystore, Secure Enclave) and
   attestation. That is **not implemented**; `.p12` export is a stopgap.
-- Tested on Windows 11 with Python 3.12 and cryptography 46. The CI workflow
-  covers Linux and Windows on Python 3.11 and 3.12 but has not run yet; macOS
-  and Termux are untested.
+- Developed on Windows 11 with Python 3.12 and cryptography 46. CI runs the
+  test suite on Linux and Windows with Python 3.11 and 3.12; macOS and Termux
+  are untested.
 
-## Two repositories, one contract
+## Connecting to OverWatch
 
 This repository is the **authority and examiner**. Its sibling,
 [OverWatch](https://github.com/Macking360/overwatch), is a read-only **witness**
-for host integrity. They share no code and are not mergeable by design; the only
-contract is open standards (PKCS#10 requests in, X.509 certificates and CRLs
-out). A device that OverWatch watches could obtain its identity here, and OpenSSL
-or step-ca can replace either side. That integration is a direction, not a
-feature: nothing in this release connects them.
+for host integrity. They are separate programs with separate codebases. Nothing
+is imported in either direction and they are not meant to be merged. The only
+thing they share is the open-standard files that TLS already uses.
+
+| Question | Answered by |
+| --- | --- |
+| Is this server and this device who it claims to be? | crystalline-pki issues the certificates |
+| Has this device been tampered with since last time? | OverWatch watches files, processes and autoruns |
+| How do the two meet? | A PEM certificate chain, a PEM CA file and a PEM key — nothing else |
+
+OverWatch already has TLS settings that take ordinary PEM files, so the
+connection is configuration, not integration. OpenSSL, step-ca or any other CA
+can stand in for crystalline-pki without touching OverWatch.
+
+### What was tested
+
+On 2026-11-05 the walkthrough below was run end to end on Windows 11 against a
+fresh clone of OverWatch, over loopback (`127.0.0.1`):
+
+- OverWatch served HTTPS using a certificate chain issued by crystalline-pki.
+- An agent with no trust configured **refused** the server
+  (`CERTIFICATE_VERIFY_FAILED: unable to get local issuer certificate`).
+- An agent given the lab root with `--ca-cert` **enrolled and delivered events**
+  (`POST /api/enroll` 201, `POST /api/events` 202).
+- An agent that also presented a crystalline-pki client certificate connected
+  the same way.
+
+### Walkthrough
+
+1. Create the lab authority and a device identity:
+
+   ```
+   crystalline-pki init
+   crystalline-pki enroll agent-laptop
+   ```
+
+2. Start the OverWatch server with the lab server certificate. Use
+   `server-chain.pem` (server certificate **plus** intermediate) so clients that
+   only trust the root can still build the chain:
+
+   ```
+   export OVERWATCH_TLS_CERT=~/.crystalline-pki/pki/server/server-chain.pem
+   export OVERWATCH_TLS_KEY=~/.crystalline-pki/pki/server/server-key.pem
+   python -m overwatch run
+   ```
+
+3. Start an agent that trusts the lab root:
+
+   ```
+   python -m overwatch agent --server https://127.0.0.1:8771 \
+     --enroll-key <key from the OverWatch instance folder> \
+     --name agent-laptop \
+     --ca-cert ~/.crystalline-pki/pki/root/root-cert.pem \
+     --watch-process
+   ```
+
+   Adjust the paths if you set `CRYSTALLINE_PKI_HOME` or `--home`. On Windows
+   the default workspace is under your user profile; run
+   `crystalline-pki status` to print the exact location.
+
+4. Optional: have the agent present its device certificate with
+   `--client-cert <issued chain .pem> --client-key <device key .pem>`
+   (both are printed by `crystalline-pki enroll`).
+
+### What this does not do
+
+- **OverWatch does not check client certificates.** Its server does not ask for
+  one, so the device certificate in step 4 is presented but never validated.
+  Revoking it here changes the CRL and nothing else: in testing, an agent using
+  a revoked certificate was still accepted. To cut a device off, revoke it in
+  OverWatch (its Devices page and per-device token). Making OverWatch require
+  and check client certificates is a change that belongs in OverWatch, not here.
+- **The lab server certificate is valid only for `localhost` and `127.0.0.1`.**
+  This release cannot issue a server certificate for another hostname, so an
+  agent on a different machine will fail hostname verification. Use another CA
+  for that, or treat this as the next feature to add.
+- **Enrollment is not bridged.** OverWatch's enroll key and device token are
+  independent of crystalline-pki's certificates. Nothing links the two
+  identities.
+- Keys are unencrypted PEM files. This is a lab, not a production CA.
+
+The direction is the part that matters: certificates and CRLs are produced here,
+host-integrity evidence is produced there, and a standard TLS handshake is the
+only seam between them.
 
 ## Termux and Android
 
